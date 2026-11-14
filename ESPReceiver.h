@@ -17,6 +17,11 @@ const uint8_t MESSAGE_TWEAK_QUANTITY = 6;
 const uint8_t MESSAGE_TWEAK_BPM = 7;    
 const uint8_t MESSAGE_TWEAK_COLOR = 8;     
 const uint8_t MESSAGE_TWEAK_PHASE = 9;    
+const uint8_t MESSAGE_TYPE_ROULETTE = 10;       // Lance la roulette, le manteau tire la couleur (valeur ignorée)
+const uint8_t MESSAGE_TYPE_ROULETTE_FROM = 11;  // Lance la roulette depuis la couleur tirée par la télécommande Kino
+
+void requestRoulette();                   // Roulette.h
+void requestRouletteFrom(uint8_t value);  // Roulette.h
 
 typedef struct Message {
   uint8_t message_type;   
@@ -26,6 +31,9 @@ typedef struct Message {
 Message message;
 
 void data_received(const uint8_t *mac, const uint8_t *incomingData, int len) {
+    if (len < (int) sizeof(message)) {
+        return;
+    }
     memcpy(&message, incomingData, sizeof(message));
 
     switch (message.message_type) {
@@ -39,7 +47,17 @@ void data_received(const uint8_t *mac, const uint8_t *incomingData, int len) {
             bpm = message.value;
             break;
         case MESSAGE_TYPE_PATTERN:
-            pattern = message.value;
+            if (message.value == ANIM_ROULETTE) {
+                requestRoulette();
+            } else {
+                pattern = message.value;
+            }
+            break;
+        case MESSAGE_TYPE_ROULETTE:
+            requestRoulette();
+            break;
+        case MESSAGE_TYPE_ROULETTE_FROM:
+            requestRouletteFrom(message.value);
             break;
         case MESSAGE_TYPE_LIGHT_DEVICE:
             // This won't be used for the coat code, because the ESP32S3 board is attached to the coat, so it can't connect to a WristBand or Feet or HeadBand.

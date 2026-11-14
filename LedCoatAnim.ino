@@ -6,6 +6,7 @@
 #include "LogicAnims.h"
 #include "GifAnims.h"
 #include "BoardFunctions.h"
+#include "Roulette.h"
 
 void setup() {
   Serial.begin(115200);
@@ -43,6 +44,8 @@ void loop() {
   if (!isForcedBrightness) {
     updateBrightness();
   }
+
+  handleRouletteRequest();
 
   if (patternOld != pattern) {
     FastLED.clear();
@@ -107,6 +110,11 @@ void loop() {
       break;
     case ANIM_COLORFULL_SPARKLE:
       animColorfulSparkle();  
+      break;
+
+    // ROULETTE (super contrainte du Kino)
+    case ANIM_ROULETTE:
+      animRoulette(currentTime);
       break;
 
     // THIRD LINE

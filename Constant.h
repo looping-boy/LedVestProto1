@@ -44,6 +44,8 @@ CRGB leds[NUM_STRIPS][500];
 #define ANIM_GIF_RAINBOW 20
 #define ANIM_GIF_PSY 21
 
+#define ANIM_ROULETTE 22  // Roulette de la super contrainte (voir Roulette.h)
+
 
 uint8_t pattern = ANIM_DIAGONAL_RAINBOW;
 uint8_t patternOld = 0;
